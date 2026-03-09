@@ -1,16 +1,66 @@
 import java.util.*;
 
 /**
- * Class RoomInventory
- Use Case 3: Centralized Room Inventory Management
-
- *Description:
- *This class demonstrates how room availability is managed using a centralized inventory.
- *Room objects are used to retrieve pricing and room characteristics.
- *No booking or search logic is introduced here.
+ * Class RoomsearchService
+ *
+ Use Case 4: Room Search & Availability Check
+ *
+ * Description:
+ * This class demonstrates how guests
+ * can view available rooms without
+ * modifying inventory data.
+ *
+ * The system enforces read-only access
+ * by design and usage discipline.
+ *
  * @author Kanishk Upadhyay
- * @version 2.0
+ * @version 4.0
  */
+class RoomsearchService{
+    private RoomInventory inventory;
+
+    public RoomsearchService(RoomInventory inventory){
+        this.inventory=inventory;
+    }
+
+    public void SearchAvailableRooms(){
+        System.out.println("\nAvailable Rooms:\n");
+
+        Map<String,Integer> rooms= inventory.getInventory();
+
+        for (Map.Entry<String, Integer> entry : rooms.entrySet()) {
+
+            String roomType = entry.getKey();
+            int available = entry.getValue();
+
+            if (available > 0) {
+
+                Room room = null;
+
+                switch (roomType) {
+                    case "SingleRoom":
+                        room = new SingleRoom();
+                        break;
+
+                    case "DoubleRoom":
+                        room = new DoubleRoom();
+                        break;
+
+                    case "SuiteRoom":
+                        room = new SuiteRoom();
+                        break;
+                }
+
+                if (room != null) {
+                    room.DisplayRoomDetails();
+                    System.out.println("Available: " + available);
+                    System.out.println("---------------------------");
+                }
+            }
+        }
+    }
+}
+
 class RoomInventory{
     Map<String,Integer> inventory=new HashMap<>();
 
@@ -33,13 +83,17 @@ class RoomInventory{
     public void UpdateAvailability(String roomType,int count){  //updating the avaiblity
         inventory.put(roomType,count);
     }
+
+    public Map<String, Integer> getInventory() {
+        return inventory;
+    }
 }
 
 abstract class Room{
     protected int NoOfBeds;
     protected int SquareFeet;
     protected double PricePerNight;
-    int Available = 5;
+
 
     public Room(int NoOfBeds,int SquareFeet,double PricePerNight){
         this.NoOfBeds = NoOfBeds;
@@ -50,8 +104,7 @@ abstract class Room{
     public void DisplayRoomDetails(){
         System.out.println("No of beds: "+NoOfBeds+
                 "\nRoom size: "+SquareFeet+" SqFeet"+
-                "\nRent per Night: ₹"+PricePerNight+
-                "\nAvailable : "+Available);
+                "\nRent per Night: ₹"+PricePerNight);
     }
 }
 
@@ -113,30 +166,12 @@ public class Book_My_Stay_App {
 
         System.out.println("Welcome To Hotel Booking Management System");
         System.out.println("System Initialized Successfully.");
-        System.out.println("Version: 3.0\n");
+        System.out.println("Version: 4.0\n");
 
         RoomInventory inventory=new RoomInventory();
-        System.out.println("Current room Inventory");
-        inventory.DisplayInventory();
 
-        SingleRoom r1 = new SingleRoom();
-        r1.DisplayRoomDetails();
-        System.out.println("Availablity: "+inventory.GetAvailablity("SingleRoom"));
-        System.out.println();
+        RoomsearchService searchService = new RoomsearchService(inventory);
 
-        DoubleRoom r2 = new DoubleRoom();
-        r2.DisplayRoomDetails();
-        System.out.println("Availablity: "+inventory.GetAvailablity("DoubleRoom"));
-        System.out.println();
-
-        SuiteRoom r3 = new SuiteRoom();
-        r3.DisplayRoomDetails();
-        System.out.println("Availablity: "+inventory.GetAvailablity("SuiteRoom"));
-        System.out.println();
-
-        inventory.UpdateAvailability("SingleRoom",2);
-
-        System.out.println("\nInventory After Booking:");
-        inventory.DisplayInventory();
+        searchService.SearchAvailableRooms();
     }
 }
