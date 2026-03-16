@@ -6,7 +6,7 @@ import java.util.*;
 
  *
  * @author Kanishk Upadhyay
- * @version 8.0
+ * @version 8.00
  */
 
 class Reservation{
