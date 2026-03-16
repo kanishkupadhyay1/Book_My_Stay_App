@@ -1,12 +1,12 @@
 import java.util.*;
 /**
- * Class BookingRequestQueue
+ * Class Add on service
  *
- *Use Case 6: Reservation Confirmation & Room Allocation
+ *Use Case 7: Add-On Service Selection
 
  *
  * @author Kanishk Upadhyay
- * @version 6.0
+ * @version 7.0
  */
 
  class AddonService{
